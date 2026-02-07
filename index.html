@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Raport - PR IPM Ahmad Dahlan</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --n-green: #4ade80;
+            --n-blue: #38bdf8;
+            --n-purple: #c084fc;
+            --n-orange: #fb923c;
+            --n-pink: #f472b6;
+            --n-yellow: #facc15;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(74, 222, 128, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.12) 0px, transparent 50%);
+            margin: 0; color: #f8fafc; min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 30px 0; flex: 1; }
+
+        /* --- LOGIN --- */
+        #login-page { height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .login-card {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 24px; border: 1px solid var(--border);
+            width: 320px; text-align: center;
+        }
+        .login-card input {
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px;
+            border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: white; outline: none; box-sizing: border-box;
+        }
+        .btn-prime {
+            width: 100%; padding: 14px; margin-top: 15px; border-radius: 12px;
+            border: none; background: var(--n-green); color: #064e3b; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-prime:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* --- DASHBOARD --- */
+        #dashboard-page { display: none; }
+        .navbar { 
+            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        /* --- PROFILE HEADER --- */
+        .header-glass {
+            background: var(--glass); border: 1px solid var(--border);
+            padding: 30px; border-radius: 24px; display: flex; align-items: center; gap: 20px;
+            margin-bottom: 30px; position: relative; overflow: hidden;
+        }
+        .avatar-glow {
+            width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--n-green);
+            display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.2); background: rgba(255,255,255,0.05);
+        }
+        .user-meta { display: flex; flex-direction: column; gap: 4px; }
+        .jabatan-tag { 
+            background: rgba(74, 222, 128, 0.15); color: var(--n-green); 
+            padding: 2px 10px; border-radius: 6px; font-size: 11px; 
+            font-weight: bold; text-transform: uppercase; width: fit-content;
+            margin-bottom: 5px; border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        /* --- CARDS --- */
+        .grid-raport { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .card-neon {
+            background: var(--glass); padding: 25px; border-radius: 24px;
+            border: 1px solid var(--border); position: relative; transition: 0.3s;
+        }
+        .grade-circle {
+            float: right; width: 45px; height: 45px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 18px; border: 1px solid currentColor;
+        }
+        .neon-line { position: absolute; bottom: 0; left: 20px; right: 20px; height: 2px; border-radius: 10px; }
+
+        /* --- ADMIN TABLE --- */
+        .admin-box { background: var(--glass); border-radius: 24px; border: 1px solid var(--border); overflow-x: auto; }
+        .admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .admin-table th { padding: 20px; text-align: left; background: rgba(255,255,255,0.05); color: #94a3b8; font-size: 12px; letter-spacing: 1px; }
+        .admin-table td { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+
+        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; }
+
+        /* --- FOOTER --- */
+        .main-footer {
+            text-align: center; padding: 20px; color: #64748b; font-size: 12px;
+            border-top: 1px solid var(--border); margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<section id="login-page">
+    <div class="login-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Logo_IPM.svg/1200px-Logo_IPM.svg.png" width="55" alt="Logo IPM">
+        <h2 style="margin:10px 0 0 0; letter-spacing: 1px;">E-RAPORT</h2>
+        <p style="color: #64748b; font-size: 12px; margin-bottom: 25px;">PR IPM AHMAD DAHLAN</p>
+        
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn-prime" onclick="handleLogin()">LOGIN</button>
+        
+        <p style="font-size: 10px; color: #475569; margin-top: 20px;">Dikelola oleh Bidang Keorganisasian</p>
+    </div>
+</section>
+
+<section id="dashboard-page">
+    <nav class="navbar">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <button id="btn-back" class="btn-back" style="display:none;" onclick="goBack()">← KEMBALI</button>
+            <span style="font-weight: bold; font-size: 14px; color: var(--n-green);">PR IPM AHMAD DAHLAN</span>
+        </div>
+        <button class="btn-back" onclick="location.reload()">LOGOUT</button>
+    </nav>
+
+    <div class="container">
+        <div class="header-glass" id="profile-header">
+            <div class="avatar-glow" id="u-avatar">?</div>
+            <div class="user-meta" id="u-meta">
+                <h2 id="u-nama" style="margin:0; font-size: 24px;">-</h2>
+                <div id="u-jabatan" class="jabatan-tag">-</div>
+                <p id="u-info" style="margin:0; color: #94a3b8; font-size: 13px;"></p>
+            </div>
+        </div>
+        <div id="main-content"></div>
+    </div>
+
+    <footer class="main-footer">
+        &copy; 2026 PR IPM Ahmad Dahlan. Dikelola oleh Bidang Keorganisasian.
+    </footer>
+</section>
+
+<script>
+    const db = {
+        "admin": { pw: "masteradmin", role: "admin", nama: "Administrator", jabatan: "Pusat Data", bidang: "Organisasi" },
+        "abiyyu.fikri": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Abiyyu Fikri", 
+            jabatan: "Ketua Bidang",
+            bidang: "Olahraga", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A+", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Abiyyu Fikri menunjukkan kinerja yang sangat baik dan konsisten dalam menjalankan tugas. Memiliki pemahaman yang baik terhadap tanggung jawabnya, namun diharapkan dapat lebih memaksimalkan kerja sama dan kontribusi dalam kegiatan berkelompok agar hasil yang dicapai semakin optimal."
+        }, 
+"ahmad.badir": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Ahmad Badir Hamam Zadisa", 
+            jabatan: "Ketua Umum",
+            bidang: "Kepemimpinan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }, 
+"ahmad.hanafi": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Ahmad Hanafi Fauzi", 
+            jabatan: "Ketua Bidang",
+            bidang: "Pengkajian Ilmu Pengetahuan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A+", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A+", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Ahmad Hanafi Fauzi menunjukkan performa yang sangat baik dan aktif dalam menjalankan perannya. Diharapkan dapat lebih menginisiasi serta mengaktifkan anggota lain agar kerja tim berjalan lebih maksimal dan merata."
+        }, 
+"akbar.izzatu": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Akbar Izzatu Zikri", 
+            jabatan: "Bendahara Umum",
+            bidang: "Administrasi Kebendaharaan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }, 
+"alvino.arkan": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Alvino Arkan", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Sosial dan Advokasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "C", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Alvino Arkan menunjukkan kinerja yang cukup baik. Diharapkan dapat lebih menjaga sikap, meningkatkan kedisiplinan, serta memahami dan melaksanakan tugas sesuai dengan tanggung jawab yang diberikan."
+        }, 
+"ananda.faiq": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Ananda Faiq Ibrahim", 
+            jabatan: "Anggota Bidang",
+            bidang: "Kajian Dakwah Islam", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A+", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Ananda Faiq Ibrahim menunjukkan kinerja yang baik dalam organisasi. Diharapkan dapat bersikap lebih dewasa, mengikuti arahan pimpinan, serta meningkatkan kedisiplinan dalam menjalankan tugas."
+        }, 
+"azka.adiyatma": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Azka Adiyatma Brahmantya", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Kesenian", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Azka Adiyatma Brahmantya menunjukkan kinerja yang baik. Perlu lebih mengontrol diri, meningkatkan kedewasaan sikap, serta memahami tugas dan tanggung jawab yang diemban."
+        }, 
+"chairul.farand": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Chairul Farand Dhiaulhaq", 
+            jabatan: "Ketua Bidang",
+            bidang: "Media", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Chairul Farand Dhiaulhaq menunjukkan kinerja yang baik dan aktif. Diharapkan dapat lebih mengontrol diri, khususnya dalam berpakaian, serta tetap menjaga sikap yang mencerminkan nilai organisasi."
+        }, 
+"fadhil.muhammad": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Fadhil Muhammad Taqiyulloh", 
+            jabatan: "Anggota Bidang",
+            bidang: "Pengkajian Ilmu Pengetahuan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "C", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "C", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Fadhil Muhammad Taqiyulloh menunjukkan kinerja yang cukup. Diharapkan dapat lebih memperhatikan kerapian, kedisiplinan, serta sikap agar dapat mencerminkan etika dan nilai organisasi dengan lebih baik."
+        }, 
+"fairuz.dzaki": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Fairuz Dzaki Mulyadi", 
+            jabatan: "Anggota Bidang",
+            bidang: "Olahraga", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "C", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Fairuz Dzaki Mulyadi menunjukkan kinerja yang cukup baik. Diharapkan dapat lebih patuh terhadap arahan, menjaga kerapian berpakaian, serta meningkatkan kedisiplinan dalam berorganisasi."
+        }, 
+"faqih.najwan": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Faqih Najwan Madani", 
+            jabatan: "Anggota Bidang",
+            bidang: "Kajian Dakwah Islam", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A+", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Faqih Najwan Madani menunjukkan kinerja yang baik. Diharapkan dapat terus meningkatkan kualitas diri, baik dari segi kedisiplinan, tanggung jawab, maupun kontribusi dalam organisasi."
+        }, 
+"fausta.dharu": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Fausta Dharu Reginald", 
+            jabatan: "Ketua Bidang",
+            bidang: "Kewirausahaan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "C", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "C", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "C", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Fausta Dharu Reginald menunjukkan kinerja yang cukup. Diharapkan dapat lebih mengontrol diri, meningkatkan kedisiplinan, serta menjaga sikap dalam setiap kegiatan organisasi."
+        }, 
+"genta.hasyarafi": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Genta Hasyarafi", 
+            jabatan: "Anggota Bidang",
+            bidang: "Kewirausahaan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Genta Hasyarafi menunjukkan kinerja yang baik. Diharapkan dapat terus meningkatkan kualitas diri serta menumbuhkan semangat dan motivasi yang lebih tinggi dalam menjalankan tugas organisasi."
+        }, 
+"gunawan.agung": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Gunawan Agung Christianto", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Pengkajian Ilmu Pengetahuan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Gunawan Agung Christianto menunjukkan kinerja yang baik dan konsisten. Diharapkan dapat lebih mengontrol diri serta menjaga sikap agar tetap selaras dengan nilai-nilai organisasi."
+        }, 
+"hadyan.muhammad": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Hadyan Muhammad Ihsan", 
+            jabatan: "Anggota Bidang",
+            bidang: "Sosial dan Advokasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "C", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "D", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "C", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Hadyan Muhammad Ihsan menunjukkan kinerja yang masih perlu ditingkatkan. Diharapkan dapat lebih fokus, meningkatkan kedisiplinan, serta tidak mudah terpengaruh oleh lingkungan sekitar dalam menjalankan tanggung jawabnya."
+        }, 
+"ibad.naufal": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Ibad Naufal Uthman", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Perkaderan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A+", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Ibad Naufal Uthman menunjukkan kinerja yang sangat baik dan konsisten. Diharapkan dapat mempertahankan prestasi tersebut serta tidak mudah terpengaruh oleh hal-hal yang dapat mengurangi fokus dan komitmen dalam berorganisasi."
+        }, 
+"isa.azatta": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Isa Azatta Fadhlan Faiq", 
+            jabatan: "Ketua Bidang",
+            bidang: "Kajian Dakwah Islam", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A+", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A+", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A+", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Isa Azatta Fadhlan Faiq menunjukkan kinerja yang sangat baik dan menonjol. Diharapkan dapat terus meningkatkan serta mempertahankan kualitas kinerja, kedisiplinan, dan kontribusinya dalam organisasi."
+        }, 
+"jesen.mahardika": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Jesen Mahardika", 
+            jabatan: "Anggota Bidang",
+            bidang: "Olahraga", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A+", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Jesen Mahardika menunjukkan kinerja yang baik. Diharapkan dapat lebih patuh terhadap arahan serta meningkatkan konsistensi dalam menjalankan tugas dan tanggung jawabnya."
+        }, 
+"abqori.zakwannur": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Abqori Zakwannur", 
+            jabatan: "Bendahara 1",
+            bidang: "Administrasi Kebendaharaan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }, 
+"alfatih": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Al Fatih", 
+            jabatan: "Ketua Bidang",
+            bidang: "Sosial dan Advokasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A+", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Al Fatih menunjukkan kinerja yang sangat baik dan konsisten. Diharapkan dapat mempertahankan semangat serta dedikasi yang tinggi dalam menjalankan tugas organisasi."
+        }, 
+"archard.abbasy": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Archard Abbasy", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Olahraga", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A+", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Archard Abbasy menunjukkan kinerja yang sangat baik. Diharapkan dapat terus menjaga semangat, konsistensi, serta kontribusi positif dalam organisasi."
+        }, 
+"azam.tawakkal": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Azam Tawakkal", 
+            jabatan: "Sekretaris Umum",
+            bidang: "Administrasi Kebendaharaan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }, 
+"dafa.alfatih": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Dafa Alfatih", 
+            jabatan: "Anggota Bidang",
+            bidang: "Perkaderan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Dafa Alfatih menunjukkan kinerja yang cukup baik. Diharapkan dapat terus memperbaiki diri serta meningkatkan kualitas kinerja dan kedisiplinan."
+        }, 
+"muhammad.fa'iz": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Fa'iz", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Media", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Fa'iz menunjukkan kinerja yang baik. Diharapkan dapat lebih memahami tugas dan arahan, serta meningkatkan kedisiplinan dan tanggung jawab."
+        }, 
+"faiz.husein": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Faiz Husein", 
+            jabatan: "Anggota BIdang",
+            bidang: "Bahasa", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A+", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Faiz Husein menunjukkan kinerja yang baik. Diharapkan dapat lebih aktif dalam bidangnya serta meningkatkan pemahaman terhadap tugas dan tanggung jawab yang diberikan."
+        }, 
+"farel.zafran": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Farel Zafran Adelio", 
+            jabatan: "Anggota Bidang",
+            bidang: "Kesenian", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "C", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Farel Zafran Adelio menunjukkan kinerja yang cukup. Diharapkan dapat lebih menjaga sikap serta memperbaiki komunikasi agar kerja sama tim dapat berjalan dengan lebih baik."
+        }, 
+"fathin.ar-rosyid": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Fathin Ar-Rosyid", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Bahasa", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Fathin Ar-Rosyid menunjukkan kinerja yang baik. Diharapkan dapat lebih aktif dalam bidangnya serta meningkatkan pemahaman dan pelaksanaan tugas."
+        }, 
+"fikri.parakas": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Fikri Parakas", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Kewirausahaan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A+", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Fikri Parakas menunjukkan kinerja yang baik. Diharapkan dapat terus menjaga semangat serta meningkatkan konsistensi dalam menjalankan tugas organisasi."
+        }, 
+"miqdad.nur": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Miqdad Nur Al-Haqqi", 
+            jabatan: "Anggota Bidang",
+            bidang: "Pengkajian Ilmu Pengetahuan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Miqdad Nur Al-Haqqi menunjukkan kinerja yang sangat baik. Diharapkan dapat terus meningkatkan kualitas diri serta mempertahankan kinerja positif yang telah dicapai."
+        }, 
+"rusyda.aiqona": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Rusyda Aiqona", 
+            jabatan: "Ketua Bidang",
+            bidang: "Perkaderan", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "C", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Rusyda Aiqona menunjukkan kinerja yang cukup baik. Diharapkan dapat lebih memprioritaskan penyelesaian tugas serta mengurangi sikap perhitungan terhadap tanggung jawab organisasi."
+        }, 
+"ryanza.ramadhan": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Muhammad Ryanza Ramadhan", 
+            jabatan: "Ketua Bidang",
+            bidang: "Bahasa", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A+", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A+", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A+", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Muhammad Ryanza Ramadhan menunjukkan kinerja yang sangat baik. Diharapkan dapat terus meningkatkan serta mempertahankan kualitas kinerja dan kontribusi positif dalam organisasi."
+        }, 
+"nasywa.tifatur": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Nasywa Tifatur Rasyid", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Organisasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }, 
+"navid.adya": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Navid Adya Alfarisy", 
+            jabatan: "Ketua Bidang",
+            bidang: "Kesenian", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "B", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "B", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "B", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Navid Adya Alfarisy menunjukkan kinerja yang cukup baik. Diharapkan dapat lebih memahami perannya sebagai ketua bidang serta meningkatkan kepemimpinan dan tanggung jawab."
+        }, 
+"padika.rausyanfikr": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Padika Rausyanfikr El Ma'mun", 
+            jabatan: "Sekretaris Bidang",
+            bidang: "Kajian Dakwah Islam", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A+", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A+", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A+", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A+", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "A", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "A", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Padika Rausyanfikr El Ma'mun menunjukkan kinerja yang sangat baik dan menonjol. Diharapkan dapat terus meningkatkan serta mempertahankan prestasi dan kontribusi positifnya."
+        }, 
+"rasheed.ragheb": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Rasheed Ragheb Farzany", 
+            jabatan: "Anggota Bidang",
+            bidang: "Media", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "A", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Rasheed Ragheb Farzany menunjukkan kinerja yang baik. Diharapkan dapat meningkatkan semangat serta motivasi dalam menjalankan tugas organisasi."
+        }, 
+"rayi.pamungkas": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Rayi Pamungkas Yahwidhi", 
+            jabatan: "Anggota Bidang",
+            bidang: "Media", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Rayi Pamungkas Yahwidhi menunjukkan kinerja yang baik. Diharapkan dapat lebih meningkatkan semangat serta konsistensi dalam berorganisasi."
+        }, 
+"sholih.muhammad": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Sholih Muhammad Faiq Ali Syahada", 
+            jabatan: "Anggota Bidang",
+            bidang: "Sosial dan Advokasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "A", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "A", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "B", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "A", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "B", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "B", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: "Ipmawan Sholih Muhammad Faiq Ali Syahada menunjukkan kinerja yang baik. Diharapkan dapat meningkatkan semangat serta lebih patuh terhadap arahan organisasi."
+        }, 
+"zaidan.ahsanu": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Zaidan Ahsanu 'Amala", 
+            jabatan: "Anggota Bidang",
+            bidang: "Organisasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }, 
+"zaidan.mumtaz": { 
+            pw: "ipmmuin", 
+            role: "pimpinan", 
+            nama: "Zaidan Mumtaz", 
+            jabatan: "Ketua Bidang",
+            bidang: "Organisasi", 
+            nba: "12.05.95002",
+            nilai: [
+                { krt: "Kepribadian & Keteladanan", skor: "", warna: "var(--n-green)", desc: "Cerminan Akhlak, tanggung jawab, dan nilai islam." },
+                { krt: "Etika & Adab Sosial", skor: "", warna: "var(--n-blue)", desc: "Sikap sopan, santun, dan penghargaan terhadap sesama." }, 
+	 { krt: "Kedisiplinan & Komitmen", skor: "", warna: "var(--n-purple)", desc: "Ketaatan terhadap aturan dan ketepatan dalam tugas." }, 
+	 { krt: "Kinerja Jabatan & Keaktifan", skor: "", warna: "var(--n-orange)", desc: "Pelaksanaan Amanah dan partisipasi dalam kegiatan." }, 
+	 { krt: "Intelektualitas & Komunikasi", skor: "", warna: "var(--n-pink)", desc: "Kemampuan berpikir kritis dan berkomunikasi efektif." }, 
+	 { krt: "Kolaborasi & Komunikasi Lintas Bidang", skor: "", warna: "var(--n-yellow)", desc: "Kerja sama dan dukungan terhadap bidang lain." }
+            ],
+            ai: ""
+        }
+    };
+
+    let sessionUser = "";
+
+    function handleLogin() {
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        if (db[u] && db[u].pw === p) {
+            sessionUser = u;
+            document.getElementById("login-page").style.display = "none";
+            document.getElementById("dashboard-page").style.display = "block";
+            showDashboard(u);
+        } else { alert("Username atau Password salah!"); }
+    }
+
+    function showDashboard(uid) {
+        const user = db[uid];
+        const header = document.getElementById("profile-header");
+        const meta = document.getElementById("u-meta");
+        
+        document.getElementById("u-nama").innerText = user.nama;
+        document.getElementById("u-jabatan").innerText = user.jabatan;
+        document.getElementById("u-avatar").innerText = user.nama.charAt(0);
+        document.getElementById("u-info").innerText = user.role === 'admin' ? "Akses Kendali Data" : `Bidang: ${user.bidang} | NBA: ${user.nba}`;
+        
+        document.getElementById("btn-back").style.display = (db[sessionUser].role === 'admin' && user.role === 'pimpinan') ? "block" : "none";
+
+        // Logic Center untuk Admin
+        if (user.role === 'admin') {
+            header.style.flexDirection = "column";
+            header.style.textAlign = "center";
+            header.style.justifyContent = "center";
+            meta.style.alignItems = "center";
+            renderAdmin(); 
+        } else {
+            header.style.flexDirection = "row";
+            header.style.textAlign = "left";
+            header.style.justifyContent = "flex-start";
+            meta.style.alignItems = "flex-start";
+            renderRaport(user); 
+        }
+    }
+
+    function renderAdmin() {
+        let html = `<div class="admin-box"><table class="admin-table"><thead><tr><th>NAMA PIMPINAN</th><th>JABATAN</th><th>BIDANG</th><th>AKSI</th></tr></thead><tbody>`;
+        for (let key in db) {
+            if (db[key].role === 'pimpinan') {
+                html += `<tr>
+                    <td><b style="color:white;">${db[key].nama}</b></td>
+                    <td style="color:#94a3b8; font-size:13px;">${db[key].jabatan}</td>
+                    <td style="color:#94a3b8; font-size:13px;">${db[key].bidang}</td>
+                    <td><button class="btn-prime" style="width:auto; padding:6px 14px; margin:0; font-size:12px;" onclick="showDashboard('${key}')">Detail Raport</button></td>
+                </tr>`;
+            }
+        }
+        document.getElementById("main-content").innerHTML = html + "</tbody></table></div>";
+    }
+
+    function renderRaport(user) {
+        let html = `<div class="grid-raport">`;
+        user.nilai.forEach(n => {
+            html += `
+                <div class="card-neon">
+                    <div class="grade-circle" style="color:${n.warna}; box-shadow: 0 0 15px ${n.warna}33;">${n.skor}</div>
+                    <h3 style="margin:0; font-size:17px; width:75%; color:#f8fafc;">${n.krt}</h3>
+                    <div style="margin-top:20px; font-size:13px; color:#94a3b8; line-height:1.6;">${n.desc}</div>
+                    <div class="neon-line" style="background:${n.warna}; box-shadow: 0 0 10px ${n.warna};"></div>
+                </div>`;
+        });
+        html += `</div><div class="card-neon" style="margin-top:25px; border-left: 4px solid var(--n-green); background: rgba(74, 222, 128, 0.03);">
+            <h3 style="margin:0 0 10px 0; font-size:18px; color: var(--n-green);">Appreciative Inquiry (AI)</h3>
+            <p style="color:#94a3b8; line-height:1.7; margin:0; font-style: italic;">"${user.ai}"</p>
+        </div>`;
+        document.getElementById("main-content").innerHTML = html;
+    }
+
+    function goBack() { showDashboard(sessionUser); }
+</script>
+</body>
+</html>
